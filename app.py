@@ -11,7 +11,7 @@ slides=[
  {"file":"02_krishna_radha.jpg","kicker":"LOVE, LAUGHTER & LITTLE MOMENTS","title":"A little mischief,","accent":"endless love…","body":"May our little one be surrounded\nby joy, wonder and love.","kind":"krishna"},
  {"file":"03_swathy_rahul.jpg","kicker":"OUR GREATEST ADVENTURE BEGINS","title":"Swathy &\nRahul","accent":"Our hearts are\ngrowing…","body":"Soon to be\nAmma & Appa","kind":"names"},
  {"file":"04_baby_shower.jpg","kicker":"A DAY FILLED WITH LOVE","title":"Join us for our","accent":"Baby Shower","body":"As we celebrate\nour little one on the way,\nwe would be delighted\nto have you with us.","kind":"invite"},
- {"file":"05_event_details.jpg","kicker":"SAVE THE DATE","title":"Friday, 12 February\n2027","accent":"6:30 AM","body":"Raghu Saran Mini Hall\nNo. 1, 1st Cross Street,\nLIC Colony, Pammal, Chennai\nTamil Nadu – 600075\n(Approx. 2 km from Pallavaram\nRailway Station)","kind":"details"},
+ {"file":"05_event_details.jpg","kicker":"SAVE THE DATE","title":"Friday, 12 February\n2027","accent":"8:00 AM","body":"Raghu Saran Mini Hall\nNo. 1, 1st Cross Street,\nLIC Colony, Pammal, Chennai\nTamil Nadu – 600075\n(Approx. 2 km from Pallavaram\nRailway Station)","kind":"details"},
  {"file":"06_closing_blessings.jpg","kicker":"A LITTLE LOVE MAKES A BIG BLESSING","title":"Your presence\nwill make our day","accent":"complete.","body":"With love and warm wishes,\nSwathy & Rahul","kind":"closing"}
 ]
 st.set_page_config(page_title="Swathy & Rahul | Baby Shower",page_icon="🪷",layout="wide",initial_sidebar_state="collapsed")
