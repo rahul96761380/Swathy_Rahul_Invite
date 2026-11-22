@@ -309,7 +309,7 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
 <img id="art" alt="Royal illustrated invitation"><div id="veil"></div>
 <div id="content"><div class="kicker" id="kicker"></div><h1 class="title" id="title"></h1><div class="accent" id="accent"></div><div class="body" id="body"></div>
 <a id="map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Raghu+Saran+Mini+Hall%2C+Pammal%2C+Chennai">⌖ &nbsp; Open in Google Maps</a></div>
-<div id="hint">Tap to begin soft Carnatic music · Swipe to explore</div>
+<div id="hint">Swipe to explore</div>
 <div id="controls"><button class="ctrl" id="music" aria-label="Turn music off" title="Music on/off">♫</button><button class="ctrl" id="prev" aria-label="Previous">‹</button><div id="dots"></div><button class="ctrl main" id="play" aria-label="Pause">Ⅱ</button><button class="ctrl" id="next" aria-label="Next">›</button></div></div>
 <script>
 const slides=__DATA__,duration=8000,audioData=__AUDIO__;let idx=0,playing=true,elapsed=0,last=performance.now(),musicEnabled=true,musicStarted=false;
@@ -323,10 +323,10 @@ function toggle(){playing=!playing;play.textContent=playing?'Ⅱ':'▶';play.set
 play.onclick=toggle;
 async function startMusic(){
  if(!audioData||!musicEnabled)return;
- try{await bgMusic.play();musicStarted=true;musicBtn.textContent='♫';musicBtn.style.opacity='1';document.getElementById('hint').textContent='Soft Carnatic music · Swipe to explore';}
- catch(e){document.getElementById('hint').textContent='Tap once to start the music · Swipe to explore';}
+ try{await bgMusic.play();musicStarted=true;musicBtn.textContent='♫';musicBtn.style.opacity='1';document.getElementById('hint').textContent='Swipe to explore';}
+ catch(e){document.getElementById('hint').textContent='Swipe to explore';}
 }
-musicBtn.onclick=(e)=>{e.stopPropagation();if(!audioData){document.getElementById('hint').textContent='Add the MP3 file listed in README.md to enable music';return;}if(musicEnabled&&!musicStarted){startMusic();return;}musicEnabled=!musicEnabled;if(musicEnabled){startMusic();musicBtn.textContent='♫';}else{bgMusic.pause();musicBtn.textContent='♪';}};
+musicBtn.onclick=(e)=>{e.stopPropagation();if(!audioData){document.getElementById('hint').textContent='Swipe to explore';return;}if(musicEnabled&&!musicStarted){startMusic();return;}musicEnabled=!musicEnabled;if(musicEnabled){startMusic();musicBtn.textContent='♫';}else{bgMusic.pause();musicBtn.textContent='♪';}};
 document.getElementById('stage').addEventListener('pointerdown',()=>{if(musicEnabled&&!musicStarted)startMusic();});
 if(audioData){startMusic();}
 function loop(now){if(playing){elapsed+=now-last;fill.style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration)show(idx+1)}last=now;requestAnimationFrame(loop)}
