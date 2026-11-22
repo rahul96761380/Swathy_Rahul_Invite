@@ -5,6 +5,7 @@ import streamlit.components.v1 as components
 
 ROOT=Path(__file__).resolve().parent
 SLIDE_DIR=ROOT/"assets"/"slides"
+MUSIC_FILE=ROOT/"assets"/"music"/"soft_carnatic_instrumental.mp3"
 slides=[
  {"file":"01_krishna_blessings.jpg","kicker":"A BEAUTIFUL NEW CHAPTER","title":"A little\nmiracle","accent":"is on its way…","body":"A tiny new heartbeat,\na lifetime of love.","kind":"opening"},
  {"file":"02_krishna_radha.jpg","kicker":"LOVE, LAUGHTER & LITTLE MOMENTS","title":"A little mischief,","accent":"endless love…","body":"May our little one be surrounded\nby joy, wonder and love.","kind":"krishna"},
@@ -21,6 +22,7 @@ if missing:
 for s in slides:
  s["src"]="data:image/jpeg;base64,"+base64.b64encode((SLIDE_DIR/s["file"]).read_bytes()).decode("ascii")
 slides_json=json.dumps(slides,ensure_ascii=False).replace("</","<\\/")
+audio_data=("data:audio/mpeg;base64,"+base64.b64encode(MUSIC_FILE.read_bytes()).decode("ascii")) if MUSIC_FILE.is_file() else ""
 html=r"""<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;500;600;700&display=swap');
@@ -307,25 +309,34 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
 <img id="art" alt="Royal illustrated invitation"><div id="veil"></div>
 <div id="content"><div class="kicker" id="kicker"></div><h1 class="title" id="title"></h1><div class="accent" id="accent"></div><div class="body" id="body"></div>
 <a id="map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Raghu+Saran+Mini+Hall%2C+Pammal%2C+Chennai">⌖ &nbsp; Open in Google Maps</a></div>
-<div id="hint">Swipe or use arrows to explore</div>
-<div id="controls"><button class="ctrl" id="prev" aria-label="Previous">‹</button><div id="dots"></div><button class="ctrl main" id="play" aria-label="Pause">Ⅱ</button><button class="ctrl" id="next" aria-label="Next">›</button></div></div>
+<div id="hint">Tap to begin soft Carnatic music · Swipe to explore</div>
+<div id="controls"><button class="ctrl" id="music" aria-label="Turn music off" title="Music on/off">♫</button><button class="ctrl" id="prev" aria-label="Previous">‹</button><div id="dots"></div><button class="ctrl main" id="play" aria-label="Pause">Ⅱ</button><button class="ctrl" id="next" aria-label="Next">›</button></div></div>
 <script>
-const slides=__DATA__,duration=8000;let idx=0,playing=true,elapsed=0,last=performance.now();
-const art=document.getElementById('art'),content=document.getElementById('content'),fill=document.getElementById('fill'),dots=document.getElementById('dots'),play=document.getElementById('play');
+const slides=__DATA__,duration=8000,audioData=__AUDIO__;let idx=0,playing=true,elapsed=0,last=performance.now(),musicEnabled=true,musicStarted=false;
+const art=document.getElementById('art'),content=document.getElementById('content'),fill=document.getElementById('fill'),dots=document.getElementById('dots'),play=document.getElementById('play'),musicBtn=document.getElementById('music');
+const bgMusic=new Audio();bgMusic.loop=true;bgMusic.preload='auto';bgMusic.volume=0.30;if(audioData)bgMusic.src=audioData;else{musicEnabled=false;musicBtn.style.opacity='.45';musicBtn.title='Add the MP3 file described in README.md';}
 const fields=['kicker','title','accent','body'];
 function show(n){idx=(n+slides.length)%slides.length;let s=slides[idx];art.style.animation='none';void art.offsetWidth;art.src=s.src;art.style.animation='zoom 8s ease-in-out both';content.className=s.kind;fields.forEach(k=>document.getElementById(k).textContent=String(s[k]||'').replace(/\\n/g,'\n'));document.getElementById('counter').textContent=String(idx+1).padStart(2,'0')+' / 06';[...dots.children].forEach((d,i)=>d.classList.toggle('active',i===idx));elapsed=0;last=performance.now();fill.style.width='0%'}
 slides.forEach((s,i)=>{let d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>show(i);dots.appendChild(d)});
 document.getElementById('prev').onclick=()=>show(idx-1);document.getElementById('next').onclick=()=>show(idx+1);
 function toggle(){playing=!playing;play.textContent=playing?'Ⅱ':'▶';play.setAttribute('aria-label',playing?'Pause':'Play');last=performance.now()}
 play.onclick=toggle;
+async function startMusic(){
+ if(!audioData||!musicEnabled)return;
+ try{await bgMusic.play();musicStarted=true;musicBtn.textContent='♫';musicBtn.style.opacity='1';document.getElementById('hint').textContent='Soft Carnatic music · Swipe to explore';}
+ catch(e){document.getElementById('hint').textContent='Tap once to start the music · Swipe to explore';}
+}
+musicBtn.onclick=(e)=>{e.stopPropagation();if(!audioData){document.getElementById('hint').textContent='Add the MP3 file listed in README.md to enable music';return;}if(musicEnabled&&!musicStarted){startMusic();return;}musicEnabled=!musicEnabled;if(musicEnabled){startMusic();musicBtn.textContent='♫';}else{bgMusic.pause();musicBtn.textContent='♪';}};
+document.getElementById('stage').addEventListener('pointerdown',()=>{if(musicEnabled&&!musicStarted)startMusic();});
+if(audioData){startMusic();}
 function loop(now){if(playing){elapsed+=now-last;fill.style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration)show(idx+1)}last=now;requestAnimationFrame(loop)}
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(idx+1);if(e.key==='ArrowLeft')show(idx-1);if(e.key===' '){e.preventDefault();toggle()}});
 let sx=0,sy=0;document.getElementById('stage').addEventListener('touchstart',e=>{sx=e.changedTouches[0].screenX;sy=e.changedTouches[0].screenY},{passive:true});
 document.getElementById('stage').addEventListener('touchend',e=>{let dx=e.changedTouches[0].screenX-sx,dy=e.changedTouches[0].screenY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show(idx+(dx<0?1:-1))},{passive:true});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=false;play.textContent='▶'}else{playing=true;play.textContent='Ⅱ';last=performance.now()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=false;play.textContent='▶';bgMusic.pause()}else{playing=true;play.textContent='Ⅱ';last=performance.now();if(musicEnabled)startMusic()}});
 show(0);requestAnimationFrame(loop);
 </script></body></html>"""
-html=html.replace("__DATA__",slides_json)
+html=html.replace("__DATA__",slides_json).replace("__AUDIO__",json.dumps(audio_data))
 st.markdown("""
 <style>
 #MainMenu,
